@@ -7,16 +7,12 @@ Validate list of host path in a specific format
         {{- $host_p := splitList "/" . -}}
         {{- $host_p := (without $host_p "") -}}
         {{- $error_msg := (printf "Invalid hostpath %s. Path must be a valid path under a given pool e.g `/mnt/tank/somepath` is valid whereas `/mnt` or `/mnt/tank` are invalid examples." .) -}}
-        {{- if and (eq (index $host_p 0) "mnt") (lt ($host_p | len) 3) -}}
-            {{- fail $error_msg -}}
-        {{- else if (eq (index $host_p 0) "cluster") -}}
+        {{- if (eq (index $host_p 0) "cluster") -}}
             {{- if (lt ($host_p | len) 2) -}}
                 {{- fail $error_msg -}}
             {{- else if (eq (index $host_p 1) "ctdb_shared_vol") -}}
                 {{- fail $error_msg -}}
             {{- end -}}
-        {{- else if not (has (index $host_p 0) $allowed_paths) -}}
-            {{- fail $error_msg -}}
         {{- end -}}
     {{- end -}}
 {{- end -}}
